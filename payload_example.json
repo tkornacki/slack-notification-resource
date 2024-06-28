@@ -1,0 +1,4 @@
+{
+  "debug": "true",
+  "params": { "text": "Hello, this is a test message", "channel": "tk-test-concourse" }
+}
