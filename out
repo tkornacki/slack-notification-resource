@@ -13,38 +13,10 @@ set +x
 # Update PATH to include /usr/local/bin for jq
 PATH=/usr/local/bin:$PATH
 
-# First we need to extract the Slack bot user OAuth token from the secret string, none of the other parsing matters
-# if we can't authenticate with Slack.
-
 # Constants
-SECRET_NAME="arn:aws:secretsmanager:us-east-1:190867436519:secret:slackbot/sdd-yRFaJe"
-REGION_NAME="us-east-1"
 SLACK_APP_USERNAME=SameDayDelivery
 
-# Retrieve secrets from AWS Secrets Manager
-SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id "$SECRET_NAME" --region "$REGION_NAME")
-if [ $? -ne 0 ]; then
-  echo "Error: Failed to retrieve secrets from AWS Secrets Manager"
-  exit 1
-fi
-
-# Parse the secret string from the JSON response
-SECRET_STRING=$(echo "$SECRET_JSON" | jq -r '.SecretString')
-if [ $? -ne 0 ]; then
-  echo "Error: Failed to parse SecretString from JSON"
-  exit 1
-fi
-
-# Extract the Slack bot user OAuth token from the secret string
-SLACK_BOT_USER_OAUTH_TOKEN=$(echo "$SECRET_STRING" | jq -r '.SLACK_BOT_USER_OAUTH_TOKEN')
-
-if [ -z "$SLACK_BOT_USER_OAUTH_TOKEN" ]; then
-  echo "Error: Missing required secret in SecretString"
-  exit 1
-fi
-
 # Begin parsing of payload content.
-
 payload=$(mktemp /tmp/resource-in.XXXXXX)
 
 # Read input into payload
@@ -89,8 +61,8 @@ if [[ "$channels" == "null" ]]; then
   exit 1
 fi
 
-# Split the channels array into
-channels=$(echo "${params}" | jq -r '.channel | join(",")' | tr ',' '\n')
+# Split the channels string into an array, and trim whitespace
+channels=$(echo "${params}" | jq -r '.channel' | tr ',' '\n')
 
 # Text file content
 export TEXT_FILE_CONTENT=""

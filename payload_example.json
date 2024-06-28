@@ -1,4 +1,7 @@
 {
   "debug": "true",
-  "params": { "text": "Hello, this is a test message", "channel": "tk-test-concourse" }
+  "params": {
+    "text": "No message specified. Here are some examples of what you can send...\n- <@U0631F2QPDW>\n- This message is from the test pipeline.\n- Emojis: :smile:, :+1:, :rocket:\n- Orange Text: `orange`\n- Code Block: ```I am sending code ```\n- New lines: new \n line (a newline char without a space after the n will not work)",
+    "channel": "sdd-test,tk-test-concourse"
+  }
 }
